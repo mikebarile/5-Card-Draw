@@ -5,7 +5,6 @@ class Deck
 
   def initialize
     @deck = Card.generate_cards
-    @discarded_cards = []
     shuffle
   end
 
@@ -25,7 +24,7 @@ class Deck
     @deck.pop
   end
 
-  def gather_discarded_cards(*cards)
-    @discarded_cards.concat(cards)
+  def reset_deck
+    @deck = Card.generate_cards
   end
 end

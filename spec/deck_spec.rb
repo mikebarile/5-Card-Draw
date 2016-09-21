@@ -19,10 +19,6 @@ describe Deck do
 
       expect(repeats[deck[0]]).to_not eq(100)
     end
-
-    it 'discarded_cards pile is empty' do
-      expect(deck.discarded_cards).to be_empty
-    end
   end
 
   describe '#draw_card' do
@@ -36,11 +32,9 @@ describe Deck do
     end
   end
 
-  describe '#gather_discarded_cards' do
-    it "adds received card to @discarded_cards" do
-      deck.gather_discarded_cards(Card.new(:spades, :A),
-          Card.new(:diamonds, :J))
-      expect(deck.discarded_cards.length).to eq(2)
+  describe '#reset_deck' do
+    it 'resets deck to 52 cards' do
+      expect(deck.length).to eq(52)
     end
   end
 end
