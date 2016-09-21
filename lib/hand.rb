@@ -12,8 +12,7 @@ class Hand
   def initialize(deck)
     @deck = deck
     @hand = []
-    @suit_hash = Hash.new { |h, k| h[k] = 0 }
-    @type_hash = Hash.new { |h, k| h[k] = 0 }
+    reset_hashes
   end
 
   def convert_to_hash
@@ -23,12 +22,23 @@ class Hand
     end
   end
 
+  def reset_hashes
+    @suit_hash = Hash.new { |h, k| h[k] = 0 }
+    @value_hash = Hash.new { |h, k| h[k] = 0 }
+  end
+
   def draw_card
+    reset_hashes
     @hand << @deck.draw_card
+    convert_to_hash
   end
 end
+
+hands = Hash.new{|h,k| h[k] = 0}
+1000000.times do
 d = Deck.new
-h = Hand.new
+h = Hand.new(d)
 5.times {h.draw_card}
-p Hand.declare_hand_type(h)
-p h
+hands[Hand.declare_hand_type(h)[0]] += 1
+end
+puts hands

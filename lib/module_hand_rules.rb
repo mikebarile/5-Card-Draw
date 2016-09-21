@@ -2,7 +2,7 @@ module HandRules
   CARD_VALUE_TYPE_PAIRS = {two: 2, three: 3, four: 4, five: 5, six: 6,
     seven: 7, eight: 8, nine: 9, ten: 10, jack: 11, queen: 12, king: 13,
     ace: 14}
-  HAND_HIERARCHY =
+  # HAND_HIERARCHY =
 
   def winning_hand(*hands)
     hands.map!{|hand| declare_hand_type(hand)}
@@ -44,7 +44,7 @@ module HandRules
     def straight_flush(hand)
       has_flush = flush(hand)
       has_straight = straight(hand)
-      if has_trip && has_pair
+      if has_flush && has_straight
         [:straight_flush, hand.value_hash.keys.max]
       else
         false
@@ -73,13 +73,13 @@ module HandRules
 
     def straight(hand)
       p_straight = hand.value_hash.keys.sort
-      diff = p_straight[-1] - p_straight[0]
+      diff = p_straight[-1] - p_straight[0] if p_straight.length == 5
       diff == 4 ? [:straight, p_straight[-1]] : false
     end
 
     def three_kind(hand)
       trips = hand.value_hash.select{|_, occurances| occurances == 3}
-      trips.length == 1 ? [:three_kind, pairs.keys[0]] : false
+      trips.length == 1 ? [:three_kind, trips.keys[0]] : false
     end
 
     def two_pair(hand)
@@ -88,11 +88,11 @@ module HandRules
     end
 
     def pair(hand)
-      hand_type = [:pair, @value_hash.key(2)]
-      hand_type[1] ? hand_type : false
+      pair = hand.value_hash.select{|_, occurances| occurances == 2}
+      pair.length == 1 ? [:pair, pair.keys[0]] : false
     end
 
     def high_card(hand)
-      [:high_card, hand.sort[-1].value]
+      [:high_card, hand.value_hash.sort[-1] ]
     end
 end

@@ -20,5 +20,4 @@ class Card
     @type = type
     @value = value
   end
-
 end
