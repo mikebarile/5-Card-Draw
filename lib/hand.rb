@@ -13,7 +13,7 @@ class Hand
     @player = player
     @deck = deck
     @hand = []
-    reset_hashes
+    reset_hand
   end
 
   def convert_to_hash
@@ -23,31 +23,43 @@ class Hand
     end
   end
 
-  def reset_hashes
+  def reset_hand
     @suit_hash = Hash.new { |h, k| h[k] = 0 }
     @value_hash = Hash.new { |h, k| h[k] = 0 }
+    @hand = @hand.sort_by { |card| card.value }
   end
 
   def draw_card
-    reset_hashes
     @hand << @deck.draw_card
+    reset_hand
     convert_to_hash
   end
 end
 
-deck = Deck.new
-a = Hand.new(deck, "Mike")
-b = Hand.new(deck, "Jay")
-c = Hand.new(deck, "Sabrina")
-5.times do
-  a.draw_card
-  b.draw_card
-  c.draw_card
+# deck = Deck.new
+# a = Hand.new(deck, "Mike")
+# b = Hand.new(deck, "Jay")
+# c = Hand.new(deck, "Sabrina")
+# 5.times do
+#   a.draw_card
+#   b.draw_card
+#   c.draw_card
+# end
+# p a.value_hash
+# p b.value_hash
+# p c.value_hash
+# p a.suit_hash
+# p b.suit_hash
+# p c.suit_hash
+# p Hand.winning_hand(a, b, c)
+
+repeats = Hash.new{|h,k| h[k] = 0}
+1000000.times do
+  deck = Deck.new
+  a = Hand.new(deck, "Mike")
+  5.times do
+    a.draw_card
+  end
+  repeats[Hand.declare_hand_type(a)[0]] += 1
 end
-p a.value_hash
-p b.value_hash
-p c.value_hash
-p a.suit_hash
-p b.suit_hash
-p c.suit_hash
-p Hand.winning_hand(a, b, c)
+p repeats
