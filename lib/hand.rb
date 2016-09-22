@@ -7,9 +7,10 @@ require_relative 'deck'
 class Hand
   extend HandRules
   attr_accessor :hand
-  attr_reader :suit_hash, :value_hash
+  attr_reader :suit_hash, :value_hash, :player
 
-  def initialize(deck)
+  def initialize(deck, player)
+    @player = player
     @deck = deck
     @hand = []
     reset_hashes
@@ -34,11 +35,19 @@ class Hand
   end
 end
 
-hands = Hash.new{|h,k| h[k] = 0}
-1000000.times do
-d = Deck.new
-h = Hand.new(d)
-5.times {h.draw_card}
-hands[Hand.declare_hand_type(h)[0]] += 1
+deck = Deck.new
+a = Hand.new(deck, "Mike")
+b = Hand.new(deck, "Jay")
+c = Hand.new(deck, "Sabrina")
+5.times do
+  a.draw_card
+  b.draw_card
+  c.draw_card
 end
-puts hands
+p a.value_hash
+p b.value_hash
+p c.value_hash
+p a.suit_hash
+p b.suit_hash
+p c.suit_hash
+p Hand.winning_hand(a, b, c)

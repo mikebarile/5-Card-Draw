@@ -2,23 +2,34 @@ module HandRules
   CARD_VALUE_TYPE_PAIRS = {two: 2, three: 3, four: 4, five: 5, six: 6,
     seven: 7, eight: 8, nine: 9, ten: 10, jack: 11, queen: 12, king: 13,
     ace: 14}
-  # HAND_HIERARCHY =
+  HAND_HIERARCHY = {royal_flush: 10, straight_flush: 9, four_kind: 8,
+    full_house: 7, flush: 6, straight: 5, three_kind: 4, two_pair: 3, pair: 2,
+    high_card: 1}
 
   def winning_hand(*hands)
-    hands.map!{|hand| declare_hand_type(hand)}
+    # hand_results = {}
+    winner = {
+      player: nil,
+      hand_value: nil,
+      tie_breaker: nil
+    }
 
+    hands.each do |hand|
+      hand_type, tie_breaker = declare_hand_type(hand)
+      hand_value = HAND_HIERARCHY[hand_type]
+      if winner.values.include?(nil) || hand_value >= winner[:hand_value]
+        if winner[:hand_value] == hand_value && winner[:tie_breaker] < tie_breaker
+          winner = {player: hand.player, hand_value: hand_value, tie_breaker: tie_breaker }
+        else
+          winner = {player: hand.player, hand_value: hand_value, tie_breaker: tie_breaker }
+        end
+# puts winner
+      end
+    end
+    winner[:player]
   end
 
   def declare_hand_type(hand)
-    # return royal_flush(hand) if royal_flush(hand)
-    # return straight_flush(hand) if straight_flush(hand)
-    # return four_kind(hand) if four_kind(hand)
-    # return flush(hand) if flush(hand)
-    # return straight(hand) if straight(hand)
-    # return three_kind(hand) if three_kind(hand)
-    # return two_pair(hand) if two_pair(hand)
-    # return pair(hand) if pair(hand)
-
     royal_flush(hand) ||
     straight_flush(hand) ||
     four_kind(hand) ||
@@ -60,7 +71,7 @@ module HandRules
       has_trip = three_kind(hand)
       has_pair = pair(hand)
       if has_trip && has_pair
-        [:full_house, { trip: has_trip[1], pair: has_pair[1] } ]
+        [:full_house, has_trip.keys[0]]
       else
         false
       end
@@ -93,6 +104,6 @@ module HandRules
     end
 
     def high_card(hand)
-      [:high_card, hand.value_hash.sort[-1] ]
+      [:high_card, hand.value_hash.keys.sort[-1] ]
     end
 end
